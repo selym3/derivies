@@ -72,13 +72,13 @@ class div(exp):
         self.d = d
 
     def __str__(self):
-        return f'{self.l} / {self.r}'
+        return f'{self.n} / {self.d}'
 
     def deriv(self):
         return div(
             sub(
-                mul(self.n, self.d.deriv()),
-                mul(self.d, self.n.deriv())
+                mul(self.d, self.n.deriv()),
+                mul(self.n, self.d.deriv())
             ),
             pow(self.d, 2)
         )
