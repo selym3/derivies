@@ -8,8 +8,6 @@ class TokenType(Enum):
     LPAREN = auto()
     RPAREN = auto()
 
-    EQUAL
-
     # math operators
     PLUS = auto()
     MINUS = auto()
@@ -17,7 +15,8 @@ class TokenType(Enum):
     SLASH = auto()
     CAROT = auto()
 
-    # math functions
+    # math constants & functions
+    NUMBER = auto()
     IDENTIFIER = auto()
 
     def __str__(self): return self._name_
