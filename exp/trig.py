@@ -50,3 +50,40 @@ class sec(exp):
             mul(sec(self.n), tan(self.n)), 
             self.n.deriv()
         )
+
+class csc(exp):
+    
+    def __init__(self, n: exp):
+        self.n = n
+
+    def __str__(self):
+        return f'csc({self.n})'
+
+    def deriv(self):
+        return mul(
+            mul(
+                mul(
+                    csc(self.n),
+                    cot(self.n)
+                ),
+                -1
+            ),
+            self.n.deriv()
+        )
+
+class cot(exp):
+
+    def __init__(self, n: exp):
+        self.n = n
+
+    def __str__(self):
+        return f'cot({self.n})'
+
+    def deriv(self):
+        return mul(
+            mul(
+                pow(csc(self.n), 2)
+                -1,
+            ),
+            self.n.deriv()
+        )
