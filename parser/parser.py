@@ -105,7 +105,7 @@ class Parser:
         if self.match(TokenType.LPAREN):
             expr = self.expression()
             if not self.match(TokenType.RPAREN):
-                print("no closing parenthesis for expression", file=stderr)
+                print("no closing parenthesis for expression", file=sys.stderr)
             return e.group(expr) # Grouping(expr)
 
         return None
