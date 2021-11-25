@@ -6,9 +6,9 @@
 
 ### parser/
 
-* expression parser
-* finish implementing scanner
 * add proper checks for equal sign (gt and lt too)
+* connect parser expressions to derivative tree
+* add support for identifiers (and maybe function calls)
 
 ### exp/
 

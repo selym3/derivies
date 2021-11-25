@@ -55,7 +55,7 @@ class Scanner:
         elif curr.isalpha():
             self.add_identifier()
         else:
-            raise ValueError
+            raise ValueError("unknown start of token " + curr)
 
     def scan_tokens(self):
         ''' repeatedly scans tokens while there's still inputs '''
