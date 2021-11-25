@@ -7,11 +7,12 @@
 ### parser/
 
 * add proper checks for equal sign (gt and lt too)
-* connect parser expressions to derivative tree
 * add support for identifiers (and maybe function calls)
+* add support for exponential derivatives
 
 ### exp/
 
+* implement better exponentials
 * solve for y'
 * find roots with newton's method
 * optimize creation of expression tree when deriv/exp is created (e.g. `a * 0`, `a * 1`, `a ^ 1`)

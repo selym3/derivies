@@ -3,10 +3,13 @@ from typing import List
 from scan import Scanner
 from tokens import Token, TokenType
 
-from sys import stderr
+# from expr import *
 
+import sys
+sys.path.append('../derivies') # add parent module??
 
-from expr import *
+import exp as e
+
 
 class Parser:
     ''' utility class to turn a sequence of tokens into a syntax tree '''
@@ -38,7 +41,12 @@ class Parser:
         while self.match(TokenType.PLUS, TokenType.MINUS):
             operator = self.previous()
             right = self.factor()
-            left = Binary(left, operator, right)
+
+            if operator.token_type == TokenType.PLUS:
+                return e.add(left, right)
+            else:
+                return e.sub(left, right)
+            # left = Binary(left, operator, right)
 
         return left
     
@@ -48,7 +56,12 @@ class Parser:
         while self.match(TokenType.SLASH, TokenType.STAR):
             operator = self.previous()
             right = self.unary()
-            left = Binary(left, operator, right)
+
+            if operator.token_type == TokenType.SLASH:
+                return e.div(left, right)
+            else:
+                return e.mul(left, right)
+            # left = Binary(left, operator, right)
 
         return left
 
@@ -56,7 +69,9 @@ class Parser:
         if self.match(TokenType.MINUS):
             operator = self.previous()
             right = self.unary()
-            return Unary(operator, right)
+            
+            return e.neg(right)
+            # return Unary(operator, right)
 
         return self.exponent()
 
@@ -66,22 +81,32 @@ class Parser:
         while self.match(TokenType.CAROT):
             operator = self.previous()
             right = self.primary()
-            left = Binary(left, operator, right)
+
+            return e.pow(left, right)
+            # left = Binary(left, operator, right)
 
         return left
 
+    # def primary_number(self):
+    #     if self.match(TokenType.NUMBER):
+
     def primary(self):
         if self.match(TokenType.NUMBER):
-            return Literal(self.previous().literal)
+            return e.const(self.previous().literal) # Literal(self.previous().literal)
 
         if self.match(TokenType.IDENTIFIER):
-            return None
+            if self.previous().lexeme == 'x':
+                return e.x()
+            else:
+                return e.y()
+            
+            # return None
 
         if self.match(TokenType.LPAREN):
             expr = self.expression()
             if not self.match(TokenType.RPAREN):
                 print("no closing parenthesis for expression", file=stderr)
-            return Grouping(expr)
+            return e.group(expr) # Grouping(expr)
 
         return None
 
@@ -117,3 +142,4 @@ if __name__ == "__main__":
     text = input()
     parsed = Parser.parse(text)
     print(parsed)
+    print(parsed.deriv())

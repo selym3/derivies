@@ -1,5 +1,5 @@
 from .exp import exp
-from numbers import Real
+# from numbers import Real
 
 from .terms import const
 
@@ -48,7 +48,7 @@ class mul(exp):
 
 class pow(exp):
 
-    def __init__(self, a: exp, b: Real):
+    def __init__(self, a: exp, b: const):
         self.a = a
         self.b = b
 
@@ -59,7 +59,7 @@ class pow(exp):
         return mul(
             mul(
                 const(self.b),
-                pow(self.a, self.b-1)
+                pow(self.a, const(self.b.value - 1))
             ),
             self.a.deriv()
         )
@@ -82,3 +82,26 @@ class div(exp):
             ),
             pow(self.d, 2)
         )
+
+
+class neg(exp):
+
+    def __init__(self, e: exp):
+        self.e = e 
+
+    def __str__(self):
+        return f'-{self.e}'
+
+    def deriv(self):
+        return neg(self.e.deriv())
+
+class group(exp):
+
+    def __init__(self, e: exp):
+        self.e = e
+
+    def __str__(self):
+        return f'({self.e})'
+
+    def deriv(self):
+        return group(self.e.deriv())
