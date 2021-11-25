@@ -13,6 +13,8 @@
 ### exp/
 
 * implement better exponentials
+* less messy evaluation functions (visitor pattern) 
+- figure out returning const from eval (maybe const can be a subclass of number)
 * solve for y'
 * find roots with newton's method
 * optimize creation of expression tree when deriv/exp is created (e.g. `a * 0`, `a * 1`, `a ^ 1`)
