@@ -89,7 +89,7 @@ def make_taylor(exp: e.exp, upto: int) -> poly:
     
     return p
 
-def make_taylor_exp(exp: e.exp, upto: int) -> e.exp:
+def make_taylor_exp(exp: e.exp, upto: int, approximate_at: e.const = e.const(0)) -> e.exp:
     p = None
 
     fact = 1
@@ -97,7 +97,10 @@ def make_taylor_exp(exp: e.exp, upto: int) -> e.exp:
         term = e.mul(
             e.const(exp.evalf(0).value/fact),
             e.pow(
-                e.x(),
+                e.sub(
+                    e.x(),
+                    approximate_at
+                ),
                 n
             ),
         )
@@ -112,11 +115,11 @@ if __name__ == "__main__":
     f = e.cos(e.x())
     print(f)
 
-    n = 3
+    n = 4
 
     f_approx = make_taylor(f, n)
     print(f_approx)
 
-    f_exp_approx = make_taylor_exp(f, n)
+    f_exp_approx = make_taylor_exp(f, n, e.const(1))
     print(f_exp_approx)
 
