@@ -29,6 +29,8 @@ class Scanner:
     ################
 
     PATTERNS = {
+        '=': TokenAdder(TokenType.EQUAL),
+        
         '(': TokenAdder(TokenType.LPAREN),
         ')': TokenAdder(TokenType.RPAREN),
 

@@ -21,7 +21,7 @@ class Parser:
             tokens = Scanner.scan(tokens)
 
         parser = Parser(tokens)
-        return parser.expression()
+        return parser.statement()
 
     def __init__(self, tokens: List[Token]):
         self.tokens = tokens
@@ -31,6 +31,16 @@ class Parser:
     #################
     # GRAMMAR RULES #
     #################
+
+    def statement(self):
+        ''' statement -> expression "=" expression '''
+        left = self.expression()
+
+        if self.match(TokenType.EQUAL):
+            right = self.expression()
+            return e.eq(left, right)
+
+        return left
 
     def expression(self):
         return self.term()
@@ -87,12 +97,9 @@ class Parser:
 
         return left
 
-    # def primary_number(self):
-    #     if self.match(TokenType.NUMBER):
-
     def primary(self):
         if self.match(TokenType.NUMBER):
-            return e.const(self.previous().literal) # Literal(self.previous().literal)
+            return e.const(self.previous().literal)
 
         if self.match(TokenType.IDENTIFIER):
             if self.previous().lexeme == 'x':

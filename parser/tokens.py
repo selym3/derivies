@@ -4,6 +4,8 @@ from token import EQUAL
 class TokenType(Enum):
     ''' defines the different types of lexemes for the scanner '''
     
+    EQUAL = auto()
+
     # grouping
     LPAREN = auto()
     RPAREN = auto()
