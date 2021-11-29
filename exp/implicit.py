@@ -28,7 +28,13 @@ class eq(exp):
         return eq(self.l.deriv(), self.r.deriv())
 
     def evalf(self, x):
-        return eq(self.l.evalf(x), self.r.evalf(x))
+        lvf = self.l.evalf(x).value
+        rvf = self.r.evalf(x).value
+
+        return const(1.0 if lvf==rvf else 0)
 
     def evali(self, x, y):
-        return eq(self.l.evali(x, y), self.r.evali(x, y))
+        lvi = self.l.evali(x, y).value
+        rvi = self.r.evali(x, y).value
+
+        return const(1.0 if lvi==rvi else 0)
