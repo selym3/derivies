@@ -1,152 +1,171 @@
-
 from typing import List
-from scan import Scanner
-from tokens import Token, TokenType
 
-# from expr import *
+class Node: pass
 
-import sys
-sys.path.append('../derivies') # add parent module??
+class Value(Node): 
+    def __init__(self, value: float):
+        self.value = value
 
-import exp as e
+    def __str__(self): return str(self.value)
+    def __repr__(self): return f'Value({str(self)})'
+
+class Add(Node):
+    def __init__(self, l: Node, r: Node): self.l,self.r = l,r
+    def __str__(self): return f'({self.l} + {self.r})'
+    def __repr__(self): return f'Add{str(self)}'
+
+# class Add(Node):
+#     def __init__(self, l: Node, r: Node): self.l,self.r = l,r
+#     def __str__(self): return f'({self.l} + {self.r})'
+#     def __repr__(self): return f'Add{str(self)}'
+
+
+class State:
+    def __init__(self):
+        self.numbers = []
+        self.expressions = []
+
+    def add_number(self, value: float):
+        self.numbers.append(Value(value))
+
+    def add_expr(self, expr):
+        expr.update(self)
+
+    def peek_expr(self): 
+        return self.expressions[-1]
+
+    def pop_expr(self):
+        expr = self.expressions.pop()
+        new_number = expr.compute(self)
+        self.add_number(new_number)
+
+    def pop_all(self):
+        while len(self.expressions):
+            self.pop_expr()
+        return self.numbers[0]
+class Expr:
+    def __init__(self, id: str):
+        self.id = id
+
+    def is_lbracket(self):
+        raise NotImplementedError
+
+    def is_operator(self):
+        raise NotImplementedError
+    
+    def compute(self, state):
+        raise NotImplementedError
+
+    def update(self, state: State):
+        raise NotImplementedError
+
+
+from enum import auto, Enum
+
+class Assoc(Enum):
+    LEFT = auto()
+    RIGHT = auto()
+
+class Operator(Expr):
+    def __init__(self, id: str, assoc: Assoc, prec: int):
+        super().__init__(id)
+        self.assoc = assoc
+        self.prec = prec
+
+        # self.node = node
+
+
+    def is_lbracket(self):
+        return False
+
+    def is_operator(self):
+        return True
+
+    def compute(self, state: State):
+        r=state.numbers.pop()
+        l=state.numbers.pop()
+
+        return Add(l, r)
+
+    def update(self, state: State):
+        # expression at the top of the stack cannot be a left parenthesis,
+        try: 
+            expr = state.expressions[-1]
+            while True:
+                if expr.is_lbracket(): break
+                if not expr.is_operator(): break
+                
+                if expr.prec>self.prec: 
+                    state.pop_expr()
+                elif expr.prec==self.prec and expr.assoc == Assoc.LEFT: 
+                    state.pop_expr()
+                else:
+                    break
+        except IndexError: pass
+        state.expressions.append(self)
 
 
 class Parser:
-    ''' utility class to turn a sequence of tokens into a syntax tree '''
+    def __init__(self, text: str, expressions: List[Expr]):
+        # input
+        self.text = text
+        self.expressions = expressions
 
-    @staticmethod
-    def parse(tokens):
-        ''' utility method for interfacing with a parser '''
-        if isinstance(tokens, str):
-            tokens = Scanner.scan(tokens)
-
-        parser = Parser(tokens)
-        return parser.statement()
-
-    def __init__(self, tokens: List[Token]):
-        self.tokens = tokens
-        # self.
+        # string parsing
+        self.start = 0
         self.current = 0
 
-    #################
-    # GRAMMAR RULES #
-    #################
+        # output state
+        self.state = State()
 
-    def statement(self):
-        ''' statement -> expression "=" expression '''
-        left = self.expression()
-
-        if self.match(TokenType.EQUAL):
-            right = self.expression()
-            return e.eq(left, right)
-
-        return left
-
-    def expression(self):
-        return self.term()
-
-    def term(self):
-        left = self.factor()
-
-        while self.match(TokenType.PLUS, TokenType.MINUS):
-            operator = self.previous()
-            right = self.factor()
-
-            if operator.token_type == TokenType.PLUS:
-                return e.add(left, right)
+    def scan(self):
+        while not self.empty():
+            self.start = self.current
+            if self.top().isdigit():
+                self.scan_number()
             else:
-                return e.sub(left, right)
-            # left = Binary(left, operator, right)
-
-        return left
-    
-    def factor(self):
-        left = self.unary()
-
-        while self.match(TokenType.SLASH, TokenType.STAR):
-            operator = self.previous()
-            right = self.unary()
-
-            if operator.token_type == TokenType.SLASH:
-                return e.div(left, right)
-            else:
-                return e.mul(left, right)
-            # left = Binary(left, operator, right)
-
-        return left
-
-    def unary(self):
-        if self.match(TokenType.MINUS):
-            operator = self.previous()
-            right = self.unary()
-            
-            return e.neg(right)
-            # return Unary(operator, right)
-
-        return self.exponent()
-
-    def exponent(self):
-        left = self.primary()
-
-        while self.match(TokenType.CAROT):
-            operator = self.previous()
-            right = self.primary()
-
-            return e.pow(left, right)
-            # left = Binary(left, operator, right)
-
-        return left
-
-    def primary(self):
-        if self.match(TokenType.NUMBER):
-            return e.const(self.previous().literal)
-
-        if self.match(TokenType.IDENTIFIER):
-            if self.previous().lexeme == 'x':
-                return e.x()
-            else:
-                return e.y()
-            
-            # return None
-
-        if self.match(TokenType.LPAREN):
-            expr = self.expression()
-            if not self.match(TokenType.RPAREN):
-                print("no closing parenthesis for expression", file=sys.stderr)
-            return e.group(expr) # Grouping(expr)
-
-        return None
-
-    ###############
-    # TOKEN LOGIC #
-    ###############
-
-    def match(self, *types: TokenType):
-        for token_type in types:
-            if self.check(token_type): 
-                self.advance()
-                return True
-        return False
-
-    def advance(self):
-        if not self.is_empty(): self.current += 1
-        return self.previous()
+                self.scan_expression()
         
-    def check(self, token_type: TokenType):
-        if self.is_empty(): return False
-        return self.peek().token_type == token_type
 
-    def previous(self):
-        return self.peek(offset=-1)
+    def scan_expression(self): 
+        mexpr = None
+        for expression in self.expressions:
+            n = len(expression.id)
+            if self.start+n<=len(self.text):
+                snip = self.text[self.start:self.start+n]
+                if snip == expression.id:
+                    if (mexpr is None) or (len(snip) > len(mexpr.id)):
+                        mexpr = expression
 
-    def peek(self, offset=0):
-        return self.tokens[self.current + offset]
+        if mexpr is None: 
+            print("oopsy woopsy")
+            self.current += 1
+        else:
+            self.state.add_expr(mexpr)
+            self.current += len(mexpr.id)
 
-    def is_empty(self):
-        return self.current >= len(self.tokens)
+    def scan_number(self):
+        # add better number parsing
+        while (not self.empty()) and (self.top().isdigit() or self.top() == '.'):
+            self.current+=1
+        self.state.add_number(float(self.text[self.start:self.current]))
 
-if __name__ == "__main__":
-    text = input()
-    parsed = Parser.parse(text)
-    print(parsed)
-    print(parsed.deriv())
+    def empty(self):
+        return self.current >= len(self.text)
+        
+    def top(self):
+        return self.text[self.current]
+
+p = Parser(
+    "100/2/5", 
+    [
+        Operator('^',Assoc.RIGHT,4),
+        Operator('/',Assoc.LEFT,3),
+        Operator('*',Assoc.LEFT,3),
+        Operator('+',Assoc.LEFT,2),
+        Operator('-',Assoc.LEFT,2)
+    ]
+)
+
+p.scan()
+print(p.state.pop_all())
