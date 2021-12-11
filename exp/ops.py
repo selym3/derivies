@@ -118,7 +118,7 @@ class div(exp):
         self.d = d
 
     def __str__(self):
-        return f'{self.n} / {self.d}'
+        return f'({self.n} / {self.d})'
 
     def deriv(self):
         return div(
