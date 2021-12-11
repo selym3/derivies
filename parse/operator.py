@@ -79,8 +79,8 @@ class Operator(Expr):
 
         self.node = node
     def compute(self, state):
-        r=state.numbers.pop()
-        l=state.numbers.pop()
+        r=state.pop_num()
+        l=state.pop_num()
 
         return self.node(l, r)
 
