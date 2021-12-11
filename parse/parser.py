@@ -1,4 +1,14 @@
 class State:
+    """ 
+    a state represents the progress of a parser working on a certain expression 
+    
+    a state contains two stacks -- one for numbers, another for expressions. 
+    this will ultimately allow infix operations to calculated in the proper order,
+    as operators can be added to a stack before being applied to valeuson the 
+    number stack. 
+
+    many state functions are just methods to interface with a stack. 
+    """
     def __init__(self):
         self.nums = []
         self.exprs = []
@@ -7,6 +17,12 @@ class State:
         self.nums.append(value)
 
     def add_expr(self, expr):
+        """ 
+        add an expression to the state (rather than just the stack).
+
+        may require more expressions to be popped or for numbers to be
+        used in some calculation.
+        """
         expr.update(self)
 
     def push_expr(self, expr):
@@ -38,6 +54,18 @@ class State:
         return self.nums[0]
 
 class Parser:
+    """ 
+    the parser is responsible for parsing a string input in infix form
+    and producing some proper output.
+
+    the parser will find number literals and expressions (+,-,*,etc) from
+    their (sub)string couterparts and update the state with these tokens.
+
+    the most important method in the parser is parse, which resets the internal
+    state of the parser so it can work on a new input and it returns the result
+    of its work (the parsed output).
+    """
+
     def __init__(self, expressions, numeric_type=float):
         # lexemes
         self.expressions = expressions
@@ -62,18 +90,32 @@ class Parser:
         self.current = 0
 
     def parse(self, text):
+        """ get a parsed output from an infix text input """
+        
+        # reset internals 
         self.reset(text)
         
+        # go through the input, 
+        # looking for literals or expressions
         while not self.empty():
             self.start = self.current
             if self.top().isdigit():
                 self.scan_number()
             else:
                 self.scan_expression()
+
+        # clear the state after all the input
+        # has been exhausted
         return self.state.pop_all()
         
 
     def scan_expression(self): 
+        """ 
+        tries to match a substring to an expression 
+        
+        if a match is found, it is added to the state.
+        if not, an error is thrown
+        """
         mexpr = None
         for expression in self.expressions:
             n = len(expression.id)
@@ -89,6 +131,11 @@ class Parser:
         self.current += len(mexpr.id)
 
     def scan_number(self):
+        """ 
+        tries to match a substring with a floating point literal 
+        and adds it to the state
+        """
+
         # add better number parsing
         while (not self.empty()) and (self.top().isdigit() or self.top() == '.'):
             self.current+=1
