@@ -4,13 +4,11 @@
 
 * plot implicit equations
 
-### parser/
+### parse/
 
-* add parsing for gt and lt
-* add proper checks for repeated equal sign (gt and lt too)
-* add support for identifiers (and maybe function calls)
-* add support for exponents
-* replace parser with shunting yard?
+* add a type system for functions (const vs function)?
+* add better errors
+* add graphing function
 
 ### exp/
 
