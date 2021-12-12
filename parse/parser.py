@@ -16,6 +16,9 @@ class State:
     def add_num(self, value):
         self.nums.append(value)
 
+    def num_count(self):
+        return len(self.nums)
+
     def add_expr(self, expr):
         """ 
         add an expression to the state (rather than just the stack).
