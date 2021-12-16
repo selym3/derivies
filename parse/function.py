@@ -3,6 +3,12 @@ from .parser import State
 
 
 class Function(Expr):
+    """
+    functions can always be added to the operator stack
+
+    when they are pushed onto the number stack, the function
+    consumes as many numbers as it has parameters
+    """
 
     # this could be any value that shouldnt be passed
     # in normally (e.g. could be None, not 2)

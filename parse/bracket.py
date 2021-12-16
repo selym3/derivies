@@ -8,6 +8,18 @@ class BracketType(Enum):
     CURLY = auto()
 
 class LBracket(Expr):
+    """
+    A left bracket represents the start of a grouped 
+    expression should be evaluated out of order
+
+    A left bracket is always added to the stack, but 
+    it keeps track of the parameter count when it was added
+    (there is always one instance of LBracket, so there are
+    multiple parameter counts in one class)
+
+    A left bracket is only removed by a right bracket of the 
+    same type
+    """
     def __init__(self, id: str, btype: BracketType):
         super().__init__(id, ExprInfo(True, False, False))
         self.btype = btype
@@ -27,6 +39,16 @@ class LBracket(Expr):
 
 
 class RBracket(Expr):
+    """
+    A right bracket represents the end of a group that 
+    is evaluated out of order
+    
+    
+    A right bracket is never added to the operator stack
+    but it evaluates all the operators up until a left bracket
+    or function calls
+    """
+
     def __init__(self, id: str, btype: BracketType):
         super().__init__(id, ExprInfo(False, False, False))
         self.btype = btype
