@@ -12,8 +12,8 @@ class y(exp):
     def deriv(self):
         return y(self.order+1)
 
-    def evali(self, x, y):
-        return const(y)
+    def evali(self, xy):
+        return const(xy[1])
 
 class eq(exp):
     
@@ -27,14 +27,10 @@ class eq(exp):
     def deriv(self):
         return eq(self.l.deriv(), self.r.deriv())
 
-    def evalf(self, x):
-        lvf = self.l.evalf(x).value
-        rvf = self.r.evalf(x).value
+    def eval(self, xy):
+        x,y = xy
+
+        lvf = self.l.eval(x).value
+        rvf = self.r.eval(y).value
 
         return const(1.0 if lvf==rvf else 0)
-
-    def evali(self, x, y):
-        lvi = self.l.evali(x, y).value
-        rvi = self.r.evali(x, y).value
-
-        return const(1.0 if lvi==rvi else 0)

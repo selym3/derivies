@@ -15,12 +15,8 @@ class cos(exp):
     def deriv(self):
         return mul(mul(const(-1), sin(self.n)), self.n.deriv())
 
-    def evali(self, x, y):
-        return const(math.cos(self.n.evali(x, y).value))
-
-    def evalf(self, x):
-        return const(math.cos(self.n.evalf(x).value))
-
+    def eval(self, xy):
+        return const(math.cos(self.n.eval(xy).value))
 
 class sin(exp):
 
@@ -33,11 +29,8 @@ class sin(exp):
     def deriv(self):
         return mul(cos(self.n), self.n.deriv())
 
-    def evali(self, x, y):
-        return const(math.sin(self.n.evali(x, y).value))
-
-    def evalf(self, x):
-        return const(math.sin(self.n.evalf(x).value))
+    def eval(self, xy):
+        return const(math.sin(self.n.eval(xy).value))
 
 class tan(exp):
     
@@ -48,13 +41,10 @@ class tan(exp):
         return f'tan({self.n})'
 
     def deriv(self):
-        return mul(pow(sec(self.n), 2), self.n.deriv())
+        return mul(pow(sec(self.n), const(2)), self.n.deriv())
 
-    def evali(self, x, y):
-        return const(math.tan(self.n.evali(x, y).value))
-
-    def evalf(self, x):
-        return const(math.tan(self.n.evalf(x).value))
+    def eval(self, xy):
+        return const(math.tan(self.n.eval(xy).value))
 
 class sec(exp):
     
@@ -70,11 +60,8 @@ class sec(exp):
             self.n.deriv()
         )
 
-    def evali(self, x, y):
-        return const(1.0 / math.cos(self.n.evali(x, y).value))
-
-    def evalf(self, x):
-        return const(1.0 / math.cos(self.n.evalf(x).value))
+    def eval(self, xy):
+        return const(1.0 / math.cos(self.n.eval(xy).value))
 
 class csc(exp):
     
@@ -91,16 +78,13 @@ class csc(exp):
                     csc(self.n),
                     cot(self.n)
                 ),
-                -1
+                const(-1)
             ),
             self.n.deriv()
         )
 
-    def evali(self, x, y):
-        return const(1.0 / math.sin(self.n.evali(x, y).value))
-
-    def evalf(self, x):
-        return const(1.0 / math.sin(self.n.evalf(x).value))
+    def eval(self, xy):
+        return const(1.0 / math.sin(self.n.eval(xy).value))
 
 class cot(exp):
 
@@ -113,16 +97,12 @@ class cot(exp):
     def deriv(self):
         return mul(
             mul(
-                pow(csc(self.n), 2)
-                -1,
+                pow(csc(self.n), const(2)),
+                const(-1)
             ),
             self.n.deriv()
         )
 
-    def evali(self, x, y):
-        return const(1.0 / math.tan(self.n.evali(x, y).value))
-
-    def evalf(self, x):
-        return const(1.0 / math.tan(self.n.evalf(x).value))
-
+    def eval(self, xy):
+        return const(1.0 / math.tan(self.n.eval(xy).value))
 

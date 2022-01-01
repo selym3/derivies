@@ -38,8 +38,8 @@ EXPRESSIONS = [
     
     # Constants
     Variable('x', e.x()),
-    Variable('pi', math.pi),
-    Variable('e', math.e), # <-- probably want to replace this with an e.euler()
+    Variable('pi', e.const(math.pi, 'pi')),
+    Variable('e', e.const(math.e, 'e')), # <-- probably want to replace this with an e.euler()
 
     # arithmetic
     Operator('^', e.pow, Assoc.RIGHT,4),
@@ -50,13 +50,13 @@ EXPRESSIONS = [
 ]
 
 if __name__ == "__main__":
+    import sys
+
     p = Parser(
         EXPRESSIONS,
         numeric_type=e.const
     )
 
-    while True:
-        print(p.parse(input()))
-
-    # print(p.state.nums)
-    # print(p.state.exprs)
+    for line in sys.stdin:
+        line = line.strip()
+        print(p.parse(line))

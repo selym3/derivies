@@ -81,7 +81,7 @@ def make_taylor(exp: e.exp, upto: int) -> poly:
     fact = 1
     for n in range(0, upto+1):
         p.add_term(
-            coeff=exp.evalf(0).value/fact,
+            coeff=exp.eval([0]).value/fact,
             exp=n
         )
         fact *= (n+1)
@@ -95,7 +95,7 @@ def make_taylor_exp(exp: e.exp, upto: int, approximate_at: e.const = e.const(0))
     fact = 1
     for n in range(0, upto+1):
         term = e.mul(
-            e.const(exp.evalf(0).value/fact),
+            e.const(exp.eval([0]).value/fact),
             e.pow(
                 e.sub(
                     e.x(),

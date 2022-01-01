@@ -27,7 +27,7 @@ EXPRESSIONS = [
 
     # logic functions
     Function('max', max, params=Function.VARARGS), 
-    Function('min', max, params=Function.VARARGS),
+    Function('min', min, params=Function.VARARGS),
 
     Function('abs', abs, 1),
 

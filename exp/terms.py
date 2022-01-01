@@ -3,32 +3,26 @@ from .exp import exp
 
 
 class const(exp):
-    def __init__(self, value: Number):
+    def __init__(self, value: Number, name: str = None):
         self.value = value
+        self.name = str(value) if name is None else name
 
     def __str__(self):
-        return str(self.value)
+        return self.name
 
     def deriv(self):
         return const(0)
 
-    def evalf(self, x):
+    def eval(self, _):
         return self
     
-    def evali(self, x, y):
-        return self
-
-
 class x(exp):
-
     def __str__(self):
         return "x"
 
     def deriv(self):
         return const(1)
 
-    def evalf(self, x):
-        return const(x)
+    def eval(self, xy):
+        return const(xy[0])
 
-    def evali(self, x, y):
-        return const(x)

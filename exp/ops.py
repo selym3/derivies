@@ -3,7 +3,6 @@ from .exp import exp
 
 from .terms import const
 
-
 class add(exp):
 
     def __init__(self, l: exp, r: exp):
@@ -16,16 +15,10 @@ class add(exp):
     def deriv(self):
         return add(self.l.deriv(), self.r.deriv())
 
-    def evali(self, x, y):
+    def eval(self, xy):
         return const(
-            self.l.evali(x, y).value +
-            self.r.evali(x, y).value
-        )
-
-    def evalf(self, x):
-        return const(
-            self.l.evalf(x).value +
-            self.r.evalf(x).value
+            self.l.eval(xy).value +
+            self.r.eval(xy).value
         )
 
 class sub(exp):
@@ -40,18 +33,11 @@ class sub(exp):
     def deriv(self):
         return sub(self.l.deriv(), self.r.deriv())
 
-    def evali(self, x, y):
+    def eval(self, xy):
         return const(
-            self.l.evali(x, y).value - 
-            self.r.evali(x, y).value
+            self.l.eval(xy).value - 
+            self.r.eval(xy).value
         )
-
-    def evalf(self, x):
-        return const(
-            self.l.evalf(x).value - 
-            self.r.evalf(x).value
-        )
-
 
 class mul(exp):
 
@@ -68,18 +54,11 @@ class mul(exp):
             mul(self.l.deriv(), self.r)
         )
 
-    def evali(self, x, y):
+    def eval(self, xy):
         return const(
-            self.l.evali(x, y).value *
-            self.r.evali(x, y).value
+            self.l.eval(xy).value *
+            self.r.eval(xy).value
         )
-
-    def evalf(self, x):
-        return const(
-            self.l.evalf(x).value *
-            self.r.evalf(x).value
-        )
-
 
 class pow(exp):
 
@@ -99,16 +78,10 @@ class pow(exp):
             self.a.deriv()
         )
 
-    def evali(self, x, y):
+    def eval(self, xy):
         return const(
-            self.a.evali(x, y).value **
-            self.b.evali(x, y).value
-        )
-
-    def evalf(self, x):
-        return const(
-            self.a.evalf(x).value **
-            self.b.evalf(x).value
+            self.a.eval(xy).value **
+            self.b.eval(xy).value
         )
 
 class div(exp):
@@ -126,52 +99,11 @@ class div(exp):
                 mul(self.d, self.n.deriv()),
                 mul(self.n, self.d.deriv())
             ),
-            pow(self.d, 2)
+            pow(self.d, const(2))
         )
 
-    def evali(self, x, y):
+    def eval(self, xy):
         return const(
-            self.n.evali(x, y).value /
-            self.d.evali(x, y).value
+            self.n.eval(xy).value /
+            self.d.eval(xy).value
         )
-
-    def evalf(self, x):
-        return const(
-            self.n.evalf(x).value /
-            self.d.evalf(x).value
-        )
-
-
-class neg(exp):
-
-    def __init__(self, e: exp):
-        self.e = e 
-
-    def __str__(self):
-        return f'-{self.e}'
-
-    def deriv(self):
-        return neg(self.e.deriv())
-
-    def evali(self, x, y):
-        return const(-self.e.evali(x, y).value)
-
-    def evalf(self, x):
-        return const(-self.e.evalf(x).value)
-
-class group(exp):
-
-    def __init__(self, e: exp):
-        self.e = e
-
-    def __str__(self):
-        return f'({self.e})'
-
-    def deriv(self):
-        return group(self.e.deriv())
-
-    def evali(self, x, y):
-        return const(self.e.evali(x, y).value)
-
-    def evalf(self, x):
-        return const(self.e.evalf(x).value)

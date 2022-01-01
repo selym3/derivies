@@ -1,14 +1,11 @@
 from numbers import Number
+from typing import List
 
 class exp:
     def deriv(self):
-        ''' any expression can return an expression that represents its derivative '''
+        """ differentiate an expression """
         raise NotImplementedError
 
-    def evalf(self, x: Number):
-        ''' any expression can be evaluated and return a constant term '''
-        raise NotImplementedError
-
-    def evali(self, x: Number, y: Number):
-        ''' eval function that supports implicit functions '''
+    def eval(self, xy=List[Number]):
+        """ evaluate an expression """
         raise NotImplementedError
