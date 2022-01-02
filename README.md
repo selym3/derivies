@@ -3,6 +3,8 @@
 ## todo
 
 * plot implicit equations
+* solver for certain terms? (e.g. y' when doing implicit)
+* algebraic simplifier -> optimize creation of expression tree when deriv/exp is created (e.g. `a * 0`, `a * 1`, `a ^ 1`)
 
 ### parse/
 
@@ -14,11 +16,6 @@
 
 * implement better exponentials
 
-* less messy evaluation functions (visitor pattern)
-* add subclass of exp that handles chain rule (requires fixing cyclical imports?)
-
-* const term might be better as subclass of number?
+* const term might be better as subclass of number? or with useful operators
+* ability to subclass const for irration terms like `pi` and `e`
 * operator overloading between expression for convenience
-
-* solve for y'
-* optimize creation of expression tree when deriv/exp is created (e.g. `a * 0`, `a * 1`, `a ^ 1`)
