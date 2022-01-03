@@ -7,8 +7,8 @@ class Frame:
     CHANNELS = 3
 
     def __init__(self, width: int, height: int):
-        self.width = width
-        self.height = height
+        self.width = int(width)
+        self.height = int(height)
 
         self.buffer = np.zeros(
             shape=(height, width, Frame.CHANNELS),
@@ -30,7 +30,7 @@ class Frame:
         dx, dy = (x2-x1), (y2-y1)
 
         # normalize vector to the number of pixels
-        pixels = max(abs(dx), abs(dy))
+        pixels = round(max(abs(dx), abs(dy)))
         dx /= pixels
         dy /= pixels
 
