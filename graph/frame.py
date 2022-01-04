@@ -18,9 +18,16 @@ class Frame:
     def image(self):
         return Image.fromarray(self.buffer)
 
+    def contains(self, pixel):
+        return 0<=pixel[0]<self.height and 0<=pixel[1]<self.width
+
     def __getitem__(self, pixel):
         return self.buffer[pixel]
     def __setitem__(self, pixel, color):
+        """ pixel - row, col """
+        if not self.contains(pixel): 
+            return
+        
         self.buffer[pixel] = color
 
     def line(self, color, x1, y1, x2, y2):
@@ -36,7 +43,7 @@ class Frame:
 
         # fill pixels
         for _ in range(pixels): 
-            self[int(x1), int(y1)] = color
+            self[int(y1), int(x1)] = color
 
             x1 += dx
             y1 += dy
