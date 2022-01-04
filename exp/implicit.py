@@ -12,7 +12,7 @@ class y(exp):
     def deriv(self):
         return y(self.order+1)
 
-    def evali(self, xy):
+    def eval(self, xy):
         return const(xy[1])
 
 class eq(exp):
