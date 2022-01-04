@@ -44,11 +44,23 @@ class Region:
     def map(self, values, other):
         return (span.map(value, other) for span, value, other in zip(self.spans, values, other.spans))
 
+SquareMap = [
+
+    # top right corner is above curve
+    lambda sq: ((sq[0][0] + sq[1][0]/2, sq[0][1]), (sq[0][0] + sq[1][0], sq[0][1] + sq[1][1]/2)),
+
+    # top left corner is above curve
+    lambda sq: ((sq[0][0] + sq[1][0]/2, sq[0][1]), (sq[0][0], sq[0][1] + sq[1][1]/2)),
+
+    # bottom 
+
+]
+
 def graph(f: e.exp, region: Region):
     """ f is an expression assumed to be in the form f(x, y) = 0 """
 
     # goal: divide world into 20x20 grid
-    sqn = 20
+    sqn = 200
     sqx = region.spans[0].range()/sqn
     sqy = region.spans[1].range()/sqn
 
@@ -67,19 +79,24 @@ def graph(f: e.exp, region: Region):
                 (px + sqx, py + sqy)
             ]
 
-            yield (px, py), (px + sqx, py + sqy)
-            # corner = 1
-            # pattern = 0
-            # for corner in corners:
-            #     value = f.eval(corner).value
-            #     if value > 0:
-            #         pattern |= corner
-            #     corner<<=1
-            # trv = f.eval(tr).value>0
+            # find the type of curve through square
+            pattern = 0
+            for cid, corner in enumerate(corners):
+                value = f.eval(corner).value
+                if value <= 0:
+                    pattern |= (1<<cid)
+            
+            # if it does go through the square
+            if 0<pattern<15:
+                square = ((px, py), (sqx, sqy))
+                yield SquareMap[0](square)
+
 
 if __name__ == "__main__":
-    f = e.sub(e.y(), e.x())
-    graph_reg = Region(Span(-20,20), Span(-20,20))
+    # f = e.sub(e.y(), e.x())
+    x_2 = e.pow(e.x(), e.const(2))
+    f = e.sub(e.pow(e.y(),e.const(2)), e.mul(x_2, e.sin(x_2)))
+    graph_reg = Region(Span(-50,50), Span(-50,50))
     
     image_size = (300, 300)
     image = Region(Span(0,image_size[0]), Span(0,image_size[1]))
@@ -92,7 +109,7 @@ if __name__ == "__main__":
 
         frame.line(
             (255, 0, 0),
-            a[0],a[1],b[0],b[1]
+            a[0],image_size[1]-a[1],b[0],image_size[1]-b[1]
         )
 
     frame.image().save('graph/graph.png')
