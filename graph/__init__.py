@@ -7,10 +7,6 @@ sys.path.insert(0, '../derivies') # <-- fml
 import exp as e
 from frame import Frame
 
-
-class LineSegment: pass
-    # def __init__()
-
 class Span:
     def __init__(self, mi, mx):
         self.mi = min(mi, mx)
@@ -44,72 +40,76 @@ class Region:
     def map(self, values, other):
         return (span.map(value, other) for span, value, other in zip(self.spans, values, other.spans))
 
-SquareMap = [
+from contour_lines import *
 
-    # top right corner is above curve
-    lambda sq: ((sq[0][0] + sq[1][0]/2, sq[0][1]), (sq[0][0] + sq[1][0], sq[0][1] + sq[1][1]/2)),
-
-    # top left corner is above curve
-    lambda sq: ((sq[0][0] + sq[1][0]/2, sq[0][1]), (sq[0][0], sq[0][1] + sq[1][1]/2)),
-
-    # bottom 
-
-]
+class Square:
+    def __init__(self, x, y, w, h):
+        self.x, self.y = x, y
+        self.w, self.h = w, h
+    
+    def corners(self):
+        """ returns corners in ccw/quadrant order"""
+        yield (self.x + self.w, self.y + self.h)
+        yield (self.x         , self.y + self.h)
+        yield (self.x         , self.y         )
+        yield (self.x + self.w, self.y         )
 
 def graph(f: e.exp, region: Region):
     """ f is an expression assumed to be in the form f(x, y) = 0 """
 
     # goal: divide world into 20x20 grid
-    sqn = 200
+    sqn = 50
     sqx = region.spans[0].range()/sqn
     sqy = region.spans[1].range()/sqn
 
     for dy in range(0, sqn):
-        dy *= sqy
         for dx in range(0, sqn):
-            dx *= sqx
-
-            px = dx + region.spans[0].mi
-            py = dy + region.spans[1].mi
-
-            corners = [
-                (px + sqx, py),
-                (px, py),
-                (px, py + sqy),
-                (px + sqx, py + sqy)
-            ]
+            square = Square(
+                dx * sqx + region.spans[0].mi, 
+                dy * sqy + region.spans[1].mi,
+                sqx, 
+                sqy
+            )
 
             # find the type of curve through square
             pattern = 0
-            for cid, corner in enumerate(corners):
+            for cid, corner in enumerate(square.corners()):
                 value = f.eval(corner).value
-                if value <= 0:
+                if value > 0:
                     pattern |= (1<<cid)
             
-            # if it does go through the square
-            if 0<pattern<15:
-                square = ((px, py), (sqx, sqy))
-                yield SquareMap[0](square)
+            # if it does go through the square, generate line segments
+            segms = get_segments(square, pattern)
+            for segm in segms:
+                yield segm
+
 
 
 if __name__ == "__main__":
     # f = e.sub(e.y(), e.x())
-    x_2 = e.pow(e.x(), e.const(2))
-    f = e.sub(e.pow(e.y(),e.const(2)), e.mul(x_2, e.sin(x_2)))
-    graph_reg = Region(Span(-50,50), Span(-50,50))
+    # f = e.pow(e.add(e.y(), e.x()), e.const(2))
+    
+    f = e.sub(e.y(), e.pow(e.x(), e.const(3)))
+    
+    # x_2 = e.pow(e.x(), e.const(2))
+    # f = e.sub(e.pow(e.y(),e.const(2)), e.mul(x_2, e.sin(x_2)))
+
+    # graph_reg = Region(Span(-2,2), Span(-2,2))
+    graph_reg = Region(Span(-8, 8), Span(-8, 8))
+    segments = graph(f, graph_reg)
     
     image_size = (300, 300)
     image = Region(Span(0,image_size[0]), Span(0,image_size[1]))
     frame = Frame(*image_size)
 
-    for a, b in graph(f, graph_reg):
-        
+    for a, b in segments:
         a = list(graph_reg.map(a, image))
         b = list(graph_reg.map(b, image))
 
         frame.line(
-            (255, 0, 0),
-            a[0],image_size[1]-a[1],b[0],image_size[1]-b[1]
+            (0, 0, 255),
+            a[0], image_size[1]-a[1],
+            b[0], image_size[1]-b[1]
         )
 
     frame.image().save('graph/graph.png')
