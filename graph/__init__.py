@@ -32,15 +32,15 @@ class Region:
         self.spans = spans
 
     def normalize(self, values):
-        return (span.normalize(value) for span, value in zip(self.spans, values))
+        return [span.normalize(value) for span, value in zip(self.spans, values)]
 
     def lerp(self, times):
-        return (span.lerp(time) for span, time in zip(self.spans, times))
+        return [span.lerp(time) for span, time in zip(self.spans, times)]
 
     def map(self, values, other):
-        return (span.map(value, other) for span, value, other in zip(self.spans, values, other.spans))
+        return [span.map(value, other) for span, value, other in zip(self.spans, values, other.spans)]
 
-from contour_lines import *
+from contour_lines import get_segments
 
 class Square:
     def __init__(self, x, y, w, h):
@@ -58,7 +58,7 @@ def graph(f: e.exp, region: Region):
     """ f is an expression assumed to be in the form f(x, y) = 0 """
 
     # goal: divide world into 20x20 grid
-    sqn = 50
+    sqn = 10
     sqx = region.spans[0].range()/sqn
     sqy = region.spans[1].range()/sqn
 
@@ -71,6 +71,9 @@ def graph(f: e.exp, region: Region):
                 sqy
             )
 
+            for segm in get_segments(square, 2):
+                yield segm
+            """
             # find the type of curve through square
             pattern = 0
             for cid, corner in enumerate(square.corners()):
@@ -82,6 +85,7 @@ def graph(f: e.exp, region: Region):
             segms = get_segments(square, pattern)
             for segm in segms:
                 yield segm
+            """
 
 
 
@@ -103,11 +107,13 @@ if __name__ == "__main__":
     frame = Frame(*image_size)
 
     for a, b in segments:
-        a = list(graph_reg.map(a, image))
-        b = list(graph_reg.map(b, image))
+        a = graph_reg.map(a, image)
+        b = graph_reg.map(b, image)
 
         frame.line(
             (0, 0, 255),
+            # a[0], a[1],
+            # b[0], b[1]
             a[0], image_size[1]-a[1],
             b[0], image_size[1]-b[1]
         )
