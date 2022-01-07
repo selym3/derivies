@@ -5,6 +5,7 @@
 * solver for certain terms? (e.g. y' when doing implicit)
 * algebraic simplifier -> optimize creation of expression tree when deriv/exp is created (e.g. `a * 0`, `a * 1`, `a ^ 1`)
 * exp -> latex string function
+* imports are kinda messed up in `graph/`
 
 ### graph/
 
@@ -17,6 +18,7 @@
 
 ### parse/
 
+* add unary operators and real negation
 * add a type system for functions (const vs function)?
 * add better errors
 * add graphing function
@@ -24,6 +26,7 @@
 ### exp/
 
 * **implement better exponentials**
+* probably remove `eq` class
 * ability to subclass const for irration terms like `pi` and `e`
 * const term might be better as subclass of number? or with useful operators
 * operator overloading between expression for convenience
