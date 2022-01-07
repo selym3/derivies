@@ -115,6 +115,8 @@ contour_lines = [
 
 def get_segments(square, pattern):
     segms = contour_lines[pattern](square)
+    
+    # this is hacky idk why it needs to be here
     out = []
     for segm in segms:
         out += [(

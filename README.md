@@ -2,9 +2,17 @@
 
 ## todo
 
-* plot implicit equations
 * solver for certain terms? (e.g. y' when doing implicit)
 * algebraic simplifier -> optimize creation of expression tree when deriv/exp is created (e.g. `a * 0`, `a * 1`, `a ^ 1`)
+* exp -> latex string function
+
+### graph/
+
+* figure out where stuff is getting flipped for squares (`get_segments(...)`) (position order? screen conversions?)
+* use interpolation on marching square sides
+* multithreading? + share corner data
+* upgrade to quadtree subdivision
+* implement some interval arithmetic
 
 ### parse/
 
@@ -14,8 +22,7 @@
 
 ### exp/
 
-* implement better exponentials
-
-* const term might be better as subclass of number? or with useful operators
+* **implement better exponentials**
 * ability to subclass const for irration terms like `pi` and `e`
+* const term might be better as subclass of number? or with useful operators
 * operator overloading between expression for convenience
