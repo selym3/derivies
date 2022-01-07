@@ -8,6 +8,7 @@
 
 ### graph/
 
+* fix line rasterization (it's bad)
 * figure out where stuff is getting flipped for squares (`get_segments(...)`) (position order? screen conversions?)
 * use interpolation on marching square sides
 * multithreading? + share corner data
