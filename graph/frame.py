@@ -22,6 +22,7 @@ class Frame:
         return 0<=pixel[0]<self.height and 0<=pixel[1]<self.width
 
     def __getitem__(self, pixel):
+        """ pixel - row, col """
         return self.buffer[pixel]
     def __setitem__(self, pixel, color):
         """ pixel - row, col """
@@ -37,7 +38,7 @@ class Frame:
         dx, dy = (x2-x1), (y2-y1)
 
         # normalize vector to the number of pixels
-        pixels = round(max(abs(dx), abs(dy)))
+        pixels = round(0.5 + max(abs(dx), abs(dy)))
         dx /= pixels
         dy /= pixels
 
@@ -48,8 +49,14 @@ class Frame:
             x1 += dx
             y1 += dy
 
-
-
+    def __str__(self):
+        out = ""
+        for row in range(self.height):
+            for col in range(self.width):
+                out += ('#' if sum(self[row, col])>0 else '.')
+            out += '\n'
+        return out
+            
 if __name__ == "__main__":
     fr = Frame(300, 300)
     fr.line((255, 0, 0), 0, 0, 300, 300)
