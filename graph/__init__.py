@@ -5,7 +5,7 @@ from typing import Tuple
 sys.path.insert(0, '../derivies') # <-- fml
 
 import exp as e
-from frame import Frame
+from .frame import Frame
 
 class Span:
     def __init__(self, mi, mx):
@@ -40,7 +40,7 @@ class Region:
     def map(self, values, other):
         return [span.map(value, other) for span, value, other in zip(self.spans, values, other.spans)]
 
-from contour_lines import get_segments
+from .contour_lines import get_segments
 
 class Square:
     def __init__(self, x, y, w, h):
@@ -84,6 +84,27 @@ def graph(f: e.exp, region: Region):
 
 
 
+def graph_to_frame(f: e.exp, region: Region, size: Tuple[int, int]):
+    frame = Frame(*size)
+    image = Region(Span(0, size[0]), Span(0, size[1]))
+    
+    segments = graph(f, region)
+
+    for a, b in segments:
+        # map point from graph space into image space
+        a = region.map(a, image)
+        b = region.map(b, image)
+
+        # flip for frame buffer
+        frame.line(
+            (255, 255, 255),
+            a[0], size[1]-a[1],
+            b[0], size[1]-b[1]
+        )
+
+    return frame
+
+
 if __name__ == "__main__":
     # f = e.sub(e.y(), e.x())
     # f = e.pow(e.add(e.y(), e.x()), e.const(2))
@@ -93,24 +114,8 @@ if __name__ == "__main__":
     x_2 = e.pow(e.x(), e.const(2))
     f = e.sub(e.pow(e.y(),e.const(2)), e.mul(x_2, e.sin(x_2)))
 
-    # graph_reg = Region(Span(-2,2), Span(-2,2))
     graph_reg = Region(Span(-50, 50), Span(-50, 50))
-    segments = graph(f, graph_reg)
     
     image_size = (300, 300)
-    image = Region(Span(0,image_size[0]), Span(0,image_size[1]))
-    frame = Frame(*image_size)
-
-    for a, b in segments:
-        a = graph_reg.map(a, image)
-        b = graph_reg.map(b, image)
-
-        frame.line(
-            (0, 0, 255),
-            # a[0], a[1],
-            # b[0], b[1]
-            a[0], image_size[1]-a[1],
-            b[0], image_size[1]-b[1]
-        )
-
+    frame = graph_to_frame(f, graph_reg, image_size)
     frame.image().save('graph/graph.png')
