@@ -1,10 +1,15 @@
 
 import math
+from graph import graph_to_frame, Span, Region
 
 from parse import *
 import exp as e
 
 from taylor import make_taylor_exp
+
+def graph_preview(f: e.exp, a: e.const, b: e.const, c: e.const, d: e.const):
+    preview_size = (40, 20)
+    return graph_to_frame(f, Region(Span(a.value,c.value),Span(b.value,d.value)), preview_size)
 
 EXPRESSIONS = [
     # whitespace
@@ -31,13 +36,13 @@ EXPRESSIONS = [
     Function('max', lambda *args: max(*args, key=lambda c: c.value), params=Function.VARARGS), 
     Function('min', lambda *args: min(*args, key=lambda c: c.value), params=Function.VARARGS), 
 
-
     # differentiate
     Function('d', lambda n: n.deriv(), 1),
     Function('approx', lambda n: make_taylor_exp(n, 3), 1),
     
     # Constants
     Variable('x', e.x()),
+    Variable('y', e.y()),
     Variable('pi', e.const(math.pi, 'pi')),
     Variable('e', e.const(math.e, 'e')), # <-- probably want to replace this with an e.euler()
 
@@ -47,6 +52,10 @@ EXPRESSIONS = [
     Operator('*', e.mul, Assoc.LEFT,3),
     Operator('+', e.add, Assoc.LEFT,2),
     Operator('-', e.sub, Assoc.LEFT,2),
+
+    # graphing
+    Function('graph', graph_preview, params=5),
+    Function('neg', lambda n: e.const(-n.value), params=1),
 ]
 
 if __name__ == "__main__":
