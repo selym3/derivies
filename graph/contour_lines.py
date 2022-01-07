@@ -29,7 +29,7 @@ def bottom_left(square):
     return [
         (
             (square.x, square.y + square.h/2),
-            (square.x + square.w/2, + square.h)
+            (square.x + square.w/2, square.y + square.h)
         )
     ]
 
@@ -75,7 +75,7 @@ def bottom_right_top_left(square):
         ),
         (
             (square.x, square.y + square.h/2),
-            (square.x + square.w/2, square.y)
+            (square.x + square.w/2, square.y + square.h)
         )
     ]
 
@@ -114,5 +114,11 @@ contour_lines = [
 ]
 
 def get_segments(square, pattern):
-    print(contour_lines[pattern].__name__)
-    return contour_lines[pattern](square)
+    segms = contour_lines[pattern](square)
+    out = []
+    for segm in segms:
+        out += [(
+            (segm[0][0], square.y + (square.h-(segm[0][1]-square.y))),
+            (segm[1][0], square.y + (square.h-(segm[1][1]-square.y))),
+        )]
+    return out

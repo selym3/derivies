@@ -57,8 +57,8 @@ class Square:
 def graph(f: e.exp, region: Region):
     """ f is an expression assumed to be in the form f(x, y) = 0 """
 
-    # goal: divide world into 20x20 grid
-    sqn = 10
+    # goal: divide world into grid of squares
+    sqn = 100
     sqx = region.spans[0].range()/sqn
     sqy = region.spans[1].range()/sqn
 
@@ -71,21 +71,16 @@ def graph(f: e.exp, region: Region):
                 sqy
             )
 
-            for segm in get_segments(square, 2):
-                yield segm
-            """
             # find the type of curve through square
             pattern = 0
             for cid, corner in enumerate(square.corners()):
                 value = f.eval(corner).value
-                if value > 0:
-                    pattern |= (1<<cid)
+                pattern |= ((value > 0)<<cid)
             
             # if it does go through the square, generate line segments
             segms = get_segments(square, pattern)
             for segm in segms:
                 yield segm
-            """
 
 
 
@@ -93,13 +88,13 @@ if __name__ == "__main__":
     # f = e.sub(e.y(), e.x())
     # f = e.pow(e.add(e.y(), e.x()), e.const(2))
     
-    f = e.sub(e.y(), e.pow(e.x(), e.const(3)))
+    # f = e.sub(e.y(), e.pow(e.sub(e.x(), e.const(3)), e.const(3)))
     
-    # x_2 = e.pow(e.x(), e.const(2))
-    # f = e.sub(e.pow(e.y(),e.const(2)), e.mul(x_2, e.sin(x_2)))
+    x_2 = e.pow(e.x(), e.const(2))
+    f = e.sub(e.pow(e.y(),e.const(2)), e.mul(x_2, e.sin(x_2)))
 
     # graph_reg = Region(Span(-2,2), Span(-2,2))
-    graph_reg = Region(Span(-8, 8), Span(-8, 8))
+    graph_reg = Region(Span(-50, 50), Span(-50, 50))
     segments = graph(f, graph_reg)
     
     image_size = (300, 300)
