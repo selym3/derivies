@@ -7,6 +7,10 @@ def find_root(f, x0, digits, show_work):
     df = f.deriv()
     epsilon = 10**(-digits)
 
+    if show_work:
+        print(f)
+        print(df)
+    
     print(f'{x0=}')
     while not is_finished(f.eval([x0]).value, 0, epsilon):
         fx = f.eval([x0]).value
@@ -19,7 +23,7 @@ def find_root(f, x0, digits, show_work):
     return x0
 
 if __name__ == "__main__":
-    f = e.sub(e.pow(e.x(), e.const(2)), e.const(30))
-    print(f)
+    f = e.sub(e.pow(e.x(), e.const(7)), e.const(1000))
     root = find_root(f, x0=3, digits=8, show_work=True)
     print("final root:", root) 
+    print("real root:", 1000**(1/7))
