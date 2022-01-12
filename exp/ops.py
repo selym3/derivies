@@ -72,7 +72,7 @@ class pow(exp):
     def deriv(self):
         return mul(
             mul(
-                const(self.b),
+                self.b,
                 pow(self.a, const(self.b.value - 1))
             ),
             self.a.deriv()
