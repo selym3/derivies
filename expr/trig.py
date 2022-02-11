@@ -1,12 +1,12 @@
 from .terms import const
-from .exp import exp
+from .expr import expr
 from .ops import mul, pow
 
 
 import math
 
-class cos(exp):
-    def __init__(self, n: exp):
+class cos(expr):
+    def __init__(self, n: expr):
         self.n = n
 
     def __str__(self):
@@ -18,9 +18,9 @@ class cos(exp):
     def eval(self, xy):
         return const(math.cos(self.n.eval(xy).value))
 
-class sin(exp):
+class sin(expr):
 
-    def __init__(self, n: exp):
+    def __init__(self, n: expr):
         self.n = n
 
     def __str__(self):
@@ -32,9 +32,9 @@ class sin(exp):
     def eval(self, xy):
         return const(math.sin(self.n.eval(xy).value))
 
-class tan(exp):
+class tan(expr):
     
-    def __init__(self, n: exp):
+    def __init__(self, n: expr):
         self.n = n
 
     def __str__(self):
@@ -46,9 +46,9 @@ class tan(exp):
     def eval(self, xy):
         return const(math.tan(self.n.eval(xy).value))
 
-class sec(exp):
+class sec(expr):
     
-    def __init__(self, n: exp):
+    def __init__(self, n: expr):
         self.n = n
 
     def __str__(self):
@@ -63,9 +63,9 @@ class sec(exp):
     def eval(self, xy):
         return const(1.0 / math.cos(self.n.eval(xy).value))
 
-class csc(exp):
+class csc(expr):
     
-    def __init__(self, n: exp):
+    def __init__(self, n: expr):
         self.n = n
 
     def __str__(self):
@@ -86,9 +86,9 @@ class csc(exp):
     def eval(self, xy):
         return const(1.0 / math.sin(self.n.eval(xy).value))
 
-class cot(exp):
+class cot(expr):
 
-    def __init__(self, n: exp):
+    def __init__(self, n: expr):
         self.n = n
 
     def __str__(self):
@@ -105,4 +105,3 @@ class cot(exp):
 
     def eval(self, xy):
         return const(1.0 / math.tan(self.n.eval(xy).value))
-

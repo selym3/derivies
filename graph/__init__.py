@@ -1,11 +1,15 @@
 # from PIL import Image
 
+# running = __name__ == "__main__"
+# ^ or use the directory that it is being run from
+
 import sys
 from typing import Tuple
-sys.path.insert(0, '../derivies') # <-- fml
+sys.path.insert(0, '../derivies') 
 
-import exp as e
+import expr as e
 from .frame import Frame
+# from frame import Frame
 
 class Span:
     def __init__(self, mi, mx):
@@ -41,6 +45,7 @@ class Region:
         return [span.map(value, other) for span, value, other in zip(self.spans, values, other.spans)]
 
 from .contour_lines import get_segments
+# from contour_lines import get_segments
 
 class Square:
     def __init__(self, x, y, w, h):
@@ -54,11 +59,11 @@ class Square:
         yield (self.x         , self.y         )
         yield (self.x + self.w, self.y         )
 
-def graph(f: e.exp, region: Region):
+def graph(f: e.expr, region: Region):
     """ f is an expression assumed to be in the form f(x, y) = 0 """
 
     # goal: divide world into grid of squares
-    sqn = 100
+    sqn = 20
     sqx = region.spans[0].range()/sqn
     sqy = region.spans[1].range()/sqn
 
@@ -70,6 +75,9 @@ def graph(f: e.exp, region: Region):
                 sqx, 
                 sqy
             )
+
+            # yield (square.x, square.y), (square.x + square.w, square.y)
+            # yield (square.x + square.w, square.y), (square.x + square.w, square.y + square.h)
 
             # find the type of curve through square
             pattern = 0
@@ -84,7 +92,7 @@ def graph(f: e.exp, region: Region):
 
 
 
-def graph_to_frame(f: e.exp, region: Region, size: Tuple[int, int]):
+def graph_to_frame(f: e.expr, region: Region, size: Tuple[int, int]):
     frame = Frame(*size)
     image = Region(Span(0, size[0]), Span(0, size[1]))
     

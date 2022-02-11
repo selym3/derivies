@@ -3,13 +3,15 @@ import math
 from graph import graph_to_frame, Span, Region
 
 from parse import *
-import exp as e
+import expr as e
 
 from taylor import make_taylor_exp
 
-def graph_preview(f: e.exp, a: e.const, b: e.const, c: e.const, d: e.const):
+def graph_preview(f: e.expr, a: e.const, b: e.const, c: e.const, d: e.const):
     preview_size = (40, 20)
     return graph_to_frame(f, Region(Span(a.value,c.value),Span(b.value,d.value)), preview_size)
+
+# def curve_preview(x: e.exp, y: e.exp, )
 
 EXPRESSIONS = [
     # whitespace
@@ -44,6 +46,7 @@ EXPRESSIONS = [
     Variable('x', e.x()),
     Variable('y', e.y()),
     Variable('pi', e.const(math.pi, 'pi')),
+    Variable('tau', e.const(math.pi * 2, 'tau')),
     Variable('e', e.const(math.e, 'e')), # <-- probably want to replace this with an e.euler()
 
     # arithmetic

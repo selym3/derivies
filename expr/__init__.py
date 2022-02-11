@@ -1,4 +1,4 @@
-from .exp import *
+from .expr import *
 from .ops import *
 from .terms import *
 from .trig import *

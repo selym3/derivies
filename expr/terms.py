@@ -1,8 +1,8 @@
 from numbers import Number
-from .exp import exp
+from .expr import expr
 
 
-class const(exp):
+class const(expr):
     def __init__(self, value: Number, name: str = None):
         self.value = value
         self.name = str(value) if name is None else name
@@ -16,7 +16,7 @@ class const(exp):
     def eval(self, _):
         return self
     
-class x(exp):
+class x(expr):
     def __str__(self):
         return "x"
 

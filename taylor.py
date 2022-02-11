@@ -1,4 +1,4 @@
-import exp as e
+import expr as e
 from numbers import Number
 
 poly_dict = dict[Number, int]
@@ -74,7 +74,7 @@ class poly:
         return f'poly({self.terms})'
 
 
-def make_taylor(exp: e.exp, upto: int) -> poly:
+def make_taylor(exp: e.expr, upto: int) -> poly:
     p = poly()
 
 
@@ -89,7 +89,7 @@ def make_taylor(exp: e.exp, upto: int) -> poly:
     
     return p
 
-def make_taylor_exp(exp: e.exp, upto: int, approximate_at: e.const = e.const(0)) -> e.exp:
+def make_taylor_exp(exp: e.expr, upto: int, approximate_at: e.const = e.const(0)) -> e.expr:
     p = None
 
     fact = 1

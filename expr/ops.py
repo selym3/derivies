@@ -1,11 +1,11 @@
-from .exp import exp
+from .expr import expr
 # from numbers import Real
 
 from .terms import const
 
-class add(exp):
+class add(expr):
 
-    def __init__(self, l: exp, r: exp):
+    def __init__(self, l: expr, r: expr):
         self.l = l
         self.r = r
 
@@ -21,9 +21,9 @@ class add(exp):
             self.r.eval(xy).value
         )
 
-class sub(exp):
+class sub(expr):
 
-    def __init__(self, l: exp, r: exp):
+    def __init__(self, l: expr, r: expr):
         self.l = l
         self.r = r
 
@@ -39,9 +39,9 @@ class sub(exp):
             self.r.eval(xy).value
         )
 
-class mul(exp):
+class mul(expr):
 
-    def __init__(self, l: exp, r: exp):
+    def __init__(self, l: expr, r: expr):
         self.l = l
         self.r = r
 
@@ -60,9 +60,9 @@ class mul(exp):
             self.r.eval(xy).value
         )
 
-class pow(exp):
+class pow(expr):
 
-    def __init__(self, a: exp, b: const):
+    def __init__(self, a: expr, b: const):
         self.a = a
         self.b = b
 
@@ -84,9 +84,9 @@ class pow(exp):
             self.b.eval(xy).value
         )
 
-class div(exp):
+class div(expr):
 
-    def __init__(self, n: exp, d: exp):
+    def __init__(self, n: expr, d: expr):
         self.n = n
         self.d = d
 
