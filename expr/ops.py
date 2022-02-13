@@ -1,6 +1,7 @@
 from .expr import expr
 # from numbers import Real
 
+# from .exp import pow
 from .terms import const
 
 class add(expr):
@@ -60,8 +61,8 @@ class mul(expr):
             self.r.eval(xy).value
         )
 
-class pow(expr):
-
+class constpow(expr): 
+    
     def __init__(self, a: expr, b: const):
         self.a = a
         self.b = b
@@ -73,16 +74,13 @@ class pow(expr):
         return mul(
             mul(
                 self.b,
-                pow(self.a, const(self.b.value - 1))
+                constpow(self.a, const(self.b.value - 1))
             ),
             self.a.deriv()
         )
 
     def eval(self, xy):
-        return const(
-            self.a.eval(xy).value **
-            self.b.eval(xy).value
-        )
+        return const(self.a.eval(xy).value ** self.b.eval(xy).value)
 
 class div(expr):
 
@@ -99,7 +97,7 @@ class div(expr):
                 mul(self.d, self.n.deriv()),
                 mul(self.n, self.d.deriv())
             ),
-            pow(self.d, const(2))
+            constpow(self.d, const(2))
         )
 
     def eval(self, xy):

@@ -1,6 +1,7 @@
 from .terms import const
 from .expr import expr
-from .ops import mul, pow
+from .ops import mul
+from .exp import pow
 
 
 import math

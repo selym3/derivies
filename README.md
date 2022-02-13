@@ -25,8 +25,8 @@
 
 ### exp/
 
-* **implement better exponentials**
-* probably remove `eq` class
-* ability to subclass const for irration terms like `pi` and `e`
+* `constpow` exists in `expr/ops.py` because of circular import with `exp.py`
+* make sure exponentials are wokring
+* ability to subclass const for irrational terms like `pi` and `e`
 * const term might be better as subclass of number? or with useful operators
 * operator overloading between expression for convenience

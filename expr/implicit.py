@@ -1,4 +1,4 @@
-from expr.terms import const
+from .terms import const
 from .expr import expr
 
 class y(expr):
